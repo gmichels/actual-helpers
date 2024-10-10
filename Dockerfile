@@ -1,24 +1,32 @@
-# Use an official Node.js runtime as a parent image
-FROM node:22
+# use an official Node.js runtime as a parent image
+FROM node:22-alpine
 
-# Don't run as root
-USER node
+# set timezone
+ENV TZ=${TZ:-UTC}
+RUN apk add --no-cache tzdata
 
-# Set the working directory in the container
+# set the working directory in the container
 WORKDIR /usr/src/app
 
-# Create the cache directory
-RUN mkdir -p ./cache && chown node:node ./cache
+# copy the npm dependencies file
+COPY package.json .
 
-# Copy the current directory contents into the container at /usr/src/app
+# install dependencies and packages specified in package.json
+RUN apk add --no-cache --virtual .gyp \
+        python3 \
+        make \
+        g++ \
+    && npm install \
+    && apk del .gyp
+
+# create the cache directory and set permissions
+RUN mkdir -p ./cache && chown -R node:node /usr/src/app
+
+# copy the current directory contents into the container at the workdir
 COPY --chown=node:node . .
 
-# Install any needed packages specified in package.json
-RUN npm install && npm update
-# Define environment variable
+# define environment variables
 ENV NODE_ENV=production
-# Allow self-signed SSL certs
-ENV NODE_TLS_REJECT_UNAUTHORIZED=0
 
-# Run the app when the container launches
-ENTRYPOINT ["tail", "-f", "/dev/null"]
+# run entrypoint script when the container launches
+ENTRYPOINT ["/usr/src/app/entrypoint.sh"]

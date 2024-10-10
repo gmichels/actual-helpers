@@ -82,6 +82,16 @@ docker exec actual-helper node sync-banks.js
 
 If it is working correctly, the bank sync should run.
 
+#### Scheduled tasks
+You can supply an environment variable called `ACTUAL_HELPERS_TASKS` to automatically set up scheduled tasks using `cron`. Multiple tasks can be supplied using a colon as the delimiter. You can also supply an optional `TZ` environment variable, to set the timezone for the container.
+
+```shell
+# scheduled tasks, separated by a colon (:)
+ACTUAL_HELPERS_TASKS="5 6 * * * cd /usr/src/app; node sync-banks.js:0 10 2 * * cd /usr/src/app; node apply-interest.js"
+# defaults to UTC
+TZ="America/Chicago"
+```
+
 ## Scripts
 
 Note that most of the scripts utilize account notes to set configuration on

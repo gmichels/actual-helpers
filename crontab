@@ -1,0 +1,5 @@
+SHELL=/bin/sh
+# min hour day month weekday command
+# * * * * * echo ACTUAL_SERVER_URL is $ACTUAL_SERVER_URL
+# * * * * * echo ACTUAL_SERVER_PASSWORD is $ACTUAL_SERVER_PASSWORD
+# * * * * * echo ACTUAL_SYNC_ID is $ACTUAL_SYNC_ID

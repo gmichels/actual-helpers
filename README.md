@@ -87,7 +87,7 @@ You can supply an environment variable called `ACTUAL_HELPERS_TASKS` to automati
 
 ```shell
 # scheduled tasks, separated by a colon (:)
-ACTUAL_HELPERS_TASKS="5 6 * * * cd /usr/src/app; node sync-banks.js:0 10 2 * * cd /usr/src/app; node apply-interest.js"
+ACTUAL_HELPERS_TASKS="5 6 * * * node sync-banks.js:0 10 2 * * node apply-interest.js"
 # defaults to UTC
 TZ="America/Chicago"
 ```

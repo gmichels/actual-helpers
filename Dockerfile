@@ -6,7 +6,7 @@ ENV TZ=${TZ:-UTC}
 RUN apk add --no-cache tzdata
 
 # set the working directory in the container
-WORKDIR /usr/src/app
+WORKDIR /home/node
 
 # copy the npm dependencies file
 COPY package.json .
@@ -19,14 +19,17 @@ RUN apk add --no-cache --virtual .gyp \
     && npm install \
     && apk del .gyp
 
-# create the cache directory and set permissions
-RUN mkdir -p ./cache && chown -R node:node /usr/src/app
+# create the cache directory and reset permissions
+RUN mkdir -p ./cache && chown -R node:node /home/node
 
-# copy the current directory contents into the container at the workdir
-COPY --chown=node:node . .
+# copy the relevant files to the container at the workdir
+COPY --chown=node:node crontab *.js* ./
+
+# copy entrypoint
+COPY entrypoint.sh /sbin
 
 # define environment variables
 ENV NODE_ENV=production
 
 # run entrypoint script when the container launches
-ENTRYPOINT ["/usr/src/app/entrypoint.sh"]
+ENTRYPOINT ["/sbin/entrypoint.sh"]

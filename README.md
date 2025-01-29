@@ -1,3 +1,5 @@
+**Note: this script requires having a starting balance in the account**
+
 # Actual Budget Helper Scripts
 
 This is a collection of useful scripts to help you manage your Actual Budget.
@@ -20,6 +22,8 @@ This is a collection of useful scripts to help you manage your Actual Budget.
     - [@actual-app/api](https://www.npmjs.com/package/@actual-app/api)
     - [dotenv](https://www.npmjs.com/package/dotenv)
     - [jsdom](https://www.npmjs.com/package/jsdom)
+    - [selenium-webdriver](https://www.npmjs.com/package/selenium-webdriver) (for `zestimate.js`)
+        - explicitly requires the use of [chromedrive](https://googlechromelabs.github.io/chrome-for-testing/#stable)
 
 ## Configuration
 
@@ -62,7 +66,37 @@ BITCOIN_PAYEE_NAME="Bitcoin Price Change"
 
 Run `npm install` to install any required dependencies.
 
-### Setup with Docker
+### Using Docker Image
+
+The repository automatically builds and pushes a Docker image of itself every
+time the repository is modified or Actual makes a new release.  To use:
+
+```console
+docker pull ghcr.io/psybers/actual-helpers
+docker run -d --name actual-helpers ghcr.io/psybers/actual-helpers
+```
+
+Then you can run specific commands inside the container, e.g.:
+
+```console
+docker exec actual-helpers node sync-banks.js
+```
+
+### Using Docker Compose
+
+An easier way to run is using Docker compose.  Be sure to create your `.env`
+file with all required settings in it.  Then download the compose file
+[docker-compose.yml](docker-compose.yml) and run:
+
+```console
+docker compose up -d
+docker exec -it actual-helpers node sync-banks.js
+```
+
+Note that most scripts do not need the `-it` flag, but some might prompt for
+input (e.g. the track-investments.js script) and those will require this flag.
+
+### Building Docker Image
 
 This assumes you already have a working version of Docker installed and have
 cloned the repo to a location of your choice.
@@ -114,6 +148,8 @@ node sync-banks.js
 It is recommended to run this script once per day or week.
 
 ### Loan Interest Calculator
+
+**Note: this script requires having a starting balance in the account**
 
 This script calculates the interest for a loan account and adds the interest
 transactions to Actual Budget.
@@ -171,6 +207,8 @@ node zestimate.js
 It is recommended to run this script once per month.
 
 ### Tracking Car Prices (Kelley Blue Book)
+
+**Note: this script requires having a starting balance in the account**
 
 This script tracks the Kelley Blue Book value for a car.  It adds new
 transactions to keep the account balance equal to the latest KBB value.

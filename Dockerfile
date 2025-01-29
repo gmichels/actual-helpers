@@ -19,6 +19,8 @@ RUN apk add --no-cache --virtual .gyp \
     && npm install \
     && apk del .gyp
 
+# Create the cache directory
+RUN mkdir -p ./cache && chown node:node ./cache
 # create the cache directory and reset permissions
 RUN mkdir -p ./cache && chown -R node:node /home/node
 
